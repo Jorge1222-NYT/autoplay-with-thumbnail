@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Editorial to Ad Transition: Prototype A</title>
+  <title>Editorial to Ad Transition: Ad Frame</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,96 +12,113 @@
     <section class="phone" aria-label="Article with autoplay video">
       <div class="topbar">The New York Times</div>
 
-      <div class="article">
-        <p class="kicker">Fashion Week</p>
-        <h1 class="headline">Fashion week looks that made it into our Spotlight for 2026</h1>
-        <p class="dek">The story video plays full frame. The ad is a separate film, with its own labels, timer, and skip.</p>
+      <div class="scroller" id="scroller">
+        <div class="article">
+          <div class="lead">
+            <p class="kicker">Fashion Week</p>
+            <h1 class="headline">Fashion week looks that made it into our Spotlight for 2026</h1>
+            <p class="dek">A portrait film lives in the story. On the way to it, a sponsored frame arrives first.</p>
+            <p class="body">The shows have ended, and the clothes that held up on the street are the ones that stayed with us. This season the silhouettes were quieter, the fabrics heavier, and the color almost always pulled from the weather.</p>
+            <p class="scroll-cue">Scroll to the video</p>
+          </div>
 
-        <div class="player" id="player" data-state="editorial" data-segment="editorial">
-          <video
-            id="editorial"
-            class="media editorial"
-            src="media/editorial.mp4"
-            playsinline
-            muted
-            preload="auto"
-          ></video>
+          <p class="body">We followed one look from the fitting room to the sidewalk, and shot it the way it actually moved: unhurried, and a little windblown.</p>
+          <p class="body">The week itself was a run of early calls and late rooms. Designers talked about weight, about what a coat can carry when the day is long, and about color that looks like stone, milk, and wet pavement.</p>
+          <p class="body">None of that fits in a still. The record of it is one look, followed from the rack to the street, with the sound of the city left in.</p>
+          <p class="body">What follows is that film. It plays in the story, then makes room for the sponsor, then picks up where it left off.</p>
 
-          <div class="ad-backdrop" id="adBackdrop"></div>
-          <div class="ad-stage" id="adStage">
+          <div class="player" id="player" data-state="waiting" data-segment="editorial">
             <video
-              id="ad"
-              class="media"
-              src="media/ad.mp4"
+              id="editorial"
+              class="media editorial"
+              src="media/editorial.mp4"
               playsinline
               muted
               preload="auto"
             ></video>
-            <div class="on-video">
-              <div class="ad-meta">
-                <span class="slug">AD</span>
-                <span class="timer" id="adTimer">0:15</span>
+
+            <div class="ad-frame" id="adFrame">
+              <img src="media/ad-frame.png" alt="Sponsored by Louis Vuitton. Fashion Weeks Looks that spotlight Fall 2026.">
+            </div>
+
+            <div class="ad-backdrop" id="adBackdrop"></div>
+            <div class="ad-stage" id="adStage">
+              <video
+                id="ad"
+                class="media"
+                src="media/ad.mp4"
+                playsinline
+                muted
+                preload="auto"
+              ></video>
+              <div class="on-video">
+                <div class="ad-meta">
+                  <span class="slug">AD</span>
+                  <span class="timer" id="adTimer">0:15</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="chrome" id="chrome">
-            <img class="mark" src="media/super-t.svg" alt="The New York Times">
-            <div class="controls">
-              <button class="icon-btn" id="expandBtn" type="button" aria-label="Expand">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M14 5h5v5M19 5l-6 6M10 19H5v-5M5 19l6-6"/>
-                </svg>
-              </button>
-              <button class="icon-btn is-muted" id="muteBtn" type="button" aria-label="Unmute" aria-pressed="true">
-                <svg class="icon-sound" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4.5 10h2.8L12 6.2v11.6L7.3 14H4.5v-4z"/>
-                </svg>
-                <svg class="icon-muted" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4.5 10h2.8L12 6.2v11.6L7.3 14H4.5v-4zM16 9.5l4.5 5M20.5 9.5l-4.5 5"/>
-                </svg>
-              </button>
-              <button class="icon-btn" id="shareBtn" type="button" aria-label="Copy link">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M10 13.2a3.6 3.6 0 0 0 5.1.4l1.8-1.8a3.6 3.6 0 0 0-5.1-5.1l-1 1"/>
-                  <path d="M14 10.8a3.6 3.6 0 0 0-5.1-.4l-1.8 1.8a3.6 3.6 0 0 0 5.1 5.1l1-1"/>
-                </svg>
-              </button>
+            <div class="chrome" id="chrome">
+              <img class="mark" src="media/super-t.svg" alt="The New York Times">
+              <div class="controls">
+                <button class="icon-btn" id="expandBtn" type="button" aria-label="Expand">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 5h5v5M19 5l-6 6M10 19H5v-5M5 19l6-6"/>
+                  </svg>
+                </button>
+                <button class="icon-btn is-muted" id="muteBtn" type="button" aria-label="Unmute" aria-pressed="true">
+                  <svg class="icon-sound" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4.5 10h2.8L12 6.2v11.6L7.3 14H4.5v-4z"/>
+                  </svg>
+                  <svg class="icon-muted" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4.5 10h2.8L12 6.2v11.6L7.3 14H4.5v-4zM16 9.5l4.5 5M20.5 9.5l-4.5 5"/>
+                  </svg>
+                </button>
+                <button class="icon-btn" id="shareBtn" type="button" aria-label="Copy link">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M10 13.2a3.6 3.6 0 0 0 5.1.4l1.8-1.8a3.6 3.6 0 0 0-5.1-5.1l-1 1"/>
+                    <path d="M14 10.8a3.6 3.6 0 0 0-5.1-.4l-1.8 1.8a3.6 3.6 0 0 0 5.1 5.1l1-1"/>
+                  </svg>
+                </button>
+              </div>
+              <p class="credit">The New York Times</p>
             </div>
-            <p class="credit">The New York Times</p>
+
+            <div class="brand-card" id="brandCard">
+              <img class="brand-logo" src="media/louis-vuitton.svg" alt="Louis Vuitton">
+              <p>Fall Collection 2026.</p>
+              <span class="cta">Explore</span>
+            </div>
+
+            <p class="continues" id="continues">Video continues after advertisement</p>
+            <div class="cue-pill" id="cuePill">Ad starts in <span id="cueCount">5</span></div>
+            <button class="skip" id="skipBtn" type="button">Skip ad in 5</button>
+
+            <div class="blackout" id="blackout"></div>
+
+            <button class="play-toggle" id="playToggle" type="button" aria-label="Play">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 7.2v9.6l8-4.8-8-4.8z" fill="currentColor"/>
+              </svg>
+            </button>
+
+            <div class="progress">
+              <div class="progress-fill" id="progressFill"></div>
+              <div class="progress-knob" id="progressKnob"></div>
+            </div>
           </div>
 
-          <div class="brand-card" id="brandCard">
-            <img class="brand-logo" src="media/louis-vuitton.svg" alt="Louis Vuitton">
-            <p>Fall Collection 2026.</p>
-            <span class="cta">Explore</span>
-          </div>
-
-          <p class="continues" id="continues">Video continues after advertisement</p>
-          <div class="cue-pill" id="cuePill">Ad starts in <span id="cueCount">5</span></div>
-          <button class="skip" id="skipBtn" type="button">Skip ad in 5</button>
-
-          <div class="blackout" id="blackout"></div>
-
-          <button class="play-toggle" id="playToggle" type="button" aria-label="Play">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M9 7.2v9.6l8-4.8-8-4.8z" fill="currentColor"/>
-            </svg>
-          </button>
-
-          <div class="progress">
-            <div class="progress-fill" id="progressFill"></div>
-            <div class="progress-knob" id="progressKnob"></div>
-          </div>
+          <p class="caption">Alex Pena, Stephanie Figgins, Axel Boada and Caroline Kim</p>
+          <p class="body">The countdown, the AD slug, the timer, the skip control, and the brand line are all part of this page, so they can move without sitting on top of type that was already in the picture.</p>
+          <p class="body">After the film, the story keeps going. The clothes from that week are still on the street, which is how they ended up here.</p>
         </div>
-
-        <p class="caption">Alex Pena, Stephanie Figgins, Axel Boada and Caroline Kim</p>
-        <p class="body">The countdown, the AD slug, the timer, the skip control, and the brand line are all part of this page, so they can move without sitting on top of type that was already in the picture.</p>
       </div>
     </section>
 
     <aside class="panel">
-      <h2>Transition prototype</h2>
+      <h2>Ad frame prototype</h2>
+      <p class="panel-note">Scroll the article. The sponsored still starts 1 second before the video enters the screen, and it holds for 2 seconds. Then the story plays.</p>
 
       <div class="buttons">
         <button class="btn" id="playBtn" type="button">Pause</button>
@@ -112,6 +129,14 @@
 
       <h3>Tuning</h3>
 
+      <label class="field">
+        <span>Ad frame length <output id="o-frameDuration"></output></span>
+        <input type="range" id="s-frameDuration" min="1" max="4" step="0.5" value="2" />
+      </label>
+      <label class="field">
+        <span>Frame leads the video by <output id="o-frameLead"></output></span>
+        <input type="range" id="s-frameLead" min="0" max="3" step="0.5" value="1" />
+      </label>
       <label class="field">
         <span>Lights out <output id="o-lightsOut"></output></span>
         <input type="range" id="s-lightsOut" min="200" max="1600" step="20" value="700" />
@@ -146,9 +171,9 @@
 
       <h3>What you can move</h3>
       <ul class="notes">
+        <li><b>On the way in:</b> the sponsored frame is the video’s poster. It starts one second before the film enters the screen and stays up for two seconds.</li>
         <li><b>Before the break:</b> “Ad starts in” sits on the editorial picture.</li>
-        <li><b>On the ad:</b> “Video continues after advertisement,” AD slug, remaining time, skip, and the Louis Vuitton line.</li>
-        <li>None of that type is burned into either clip.</li>
+        <li><b>On the ad:</b> the new portrait film, “Video continues after advertisement,” AD slug, remaining time, skip, and the Louis Vuitton line.</li>
       </ul>
     </aside>
 

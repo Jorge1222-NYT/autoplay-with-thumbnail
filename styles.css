@@ -27,6 +27,10 @@ body {
 
 .phone {
   width: 390px;
+  height: min(844px, calc(100vh - 48px));
+  min-height: 640px;
+  display: flex;
+  flex-direction: column;
   background: var(--paper);
   border-radius: 28px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
@@ -34,6 +38,7 @@ body {
 }
 
 .topbar {
+  flex: none;
   padding: 14px 16px 10px;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 20px;
@@ -41,7 +46,25 @@ body {
   border-bottom: 1px solid #e2e2e2;
 }
 
-.article { padding: 16px 18px 32px; }
+.scroller {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  container-type: size;
+  scrollbar-width: none;
+}
+
+.scroller::-webkit-scrollbar { width: 0; }
+
+.article { padding: 16px 18px 48px; }
+
+.lead {
+  min-height: calc(100cqb - 16px);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 22px;
+}
 
 .kicker {
   margin: 0 0 8px;
@@ -66,6 +89,17 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
   line-height: 1.45;
+}
+
+.scroll-cue {
+  margin: auto 0 4px;
+  font-family: var(--ui-font);
+  font-size: 12px;
+  font-weight: var(--ui-weight);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ink-soft);
 }
 
 .caption {
@@ -100,8 +134,54 @@ body {
   background: #000;
 }
 
+.editorial { transition: opacity 520ms ease; }
+
+#player[data-state="waiting"] .editorial {
+  opacity: 0;
+  transition: none;
+}
+
+/* Sponsored still. It covers the player on the way in,
+   then fades away as the story film starts. */
+.ad-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  background: #000;
+}
+
+/* Pop on while the player is still below the fold, then dissolve
+   into the story once the two seconds are up. */
+#player[data-state="frame"] .ad-frame {
+  opacity: 1;
+  transition: none;
+}
+
+#player[data-state="editorial"] .ad-frame,
+#player[data-state="cue"] .ad-frame,
+#player[data-state="lights-out"] .ad-frame,
+#player[data-state="lights-in"] .ad-frame,
+#player[data-state="ad"] .ad-frame {
+  opacity: 0;
+  transition: opacity 520ms ease;
+}
+
+.ad-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#player[data-state="frame"] .editorial {
+  opacity: 1;
+  transition: none;
+}
+
 /* Full-frame black field behind the ad, so the editorial picture
-   does not show through the bars when the sponsored film is up. */
+   does not show through while the sponsored film is coming up. */
 .ad-backdrop {
   position: absolute;
   inset: 0;
@@ -113,18 +193,12 @@ body {
 
 #player[data-segment="ad"] .ad-backdrop { opacity: 1; }
 #player[data-segment="ad"] .editorial { opacity: 0; }
+#player[data-segment="ad"] .ad-frame { opacity: 0; }
 
-/* Editorial is the full portrait frame. The ad is a 4:3 film
-   centered on the black field, so the bars above and below stay clear
-   for the interface. */
+/* The new film is portrait, so it fills the same 9:16 frame as the story. */
 .ad-stage {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  transform: translateY(-50%);
+  inset: 0;
   opacity: 0;
   z-index: 2;
 }
@@ -140,7 +214,7 @@ body {
 
 .ad-meta {
   position: absolute;
-  top: 12px;
+  top: 58px;
   left: var(--edge);
   display: flex;
   gap: 8px;
@@ -169,8 +243,7 @@ body {
 
 .slug { letter-spacing: 0.04em; }
 
-/* Advertiser lockup sits in the black field under the film,
-   not on top of the picture. */
+/* Advertiser lockup sits on the lower edge of the portrait film. */
 .brand-card {
   position: absolute;
   left: var(--edge);
@@ -180,6 +253,17 @@ body {
   color: #fff;
   opacity: 0;
   pointer-events: none;
+}
+
+.brand-card::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  right: -16px;
+  bottom: -23px;
+  height: 210px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0));
+  z-index: -1;
 }
 
 #player[data-segment="ad"] .brand-card { opacity: 1; }
@@ -222,8 +306,6 @@ body {
 
 .cue-pill,
 .skip {
-  top: 24px;
-  left: var(--edge);
   font-size: 15px;
   font-weight: var(--ui-weight);
   letter-spacing: 0;
@@ -233,14 +315,20 @@ body {
   backdrop-filter: blur(16px);
 }
 
+.cue-pill {
+  top: 24px;
+  left: var(--edge);
+}
+
 .continues {
   left: var(--edge);
+  right: 16px;
+  top: 18px;
   margin: 0;
   font-size: 14px;
   font-weight: var(--ui-weight);
   letter-spacing: 0.02em;
-  /* Sit in the black bar, just above the centered 4:3 film. */
-  top: calc(50% - (100cqi * 3 / 8) - 28px);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 }
 
 #player[data-segment="ad"] .continues {
@@ -249,15 +337,18 @@ body {
 }
 
 /* Editorial player chrome: mark, controls, credit.
-   Hidden once the ad field is up. */
+   Hidden on the sponsored frame and once the ad is up. */
 .chrome {
   position: absolute;
   inset: 0;
   z-index: 3;
   pointer-events: none;
+  transition: opacity 400ms ease;
 }
 
-#player[data-segment="ad"] .chrome {
+#player[data-segment="ad"] .chrome,
+#player[data-state="waiting"] .chrome,
+#player[data-state="frame"] .chrome {
   opacity: 0;
 }
 
@@ -304,7 +395,9 @@ body {
 .icon-btn.is-muted .icon-sound { display: none; }
 .icon-btn.is-muted .icon-muted { display: block; }
 
-#player[data-segment="ad"] .icon-btn { pointer-events: none; }
+#player[data-segment="ad"] .icon-btn,
+#player[data-state="waiting"] .icon-btn,
+#player[data-state="frame"] .icon-btn { pointer-events: none; }
 
 .credit {
   position: absolute;
@@ -322,6 +415,9 @@ body {
 }
 
 .skip {
+  top: 54px;
+  right: var(--edge);
+  left: auto;
   border: 0;
   color: #fff;
   cursor: default;
@@ -365,6 +461,9 @@ body {
 
 .player.is-paused .play-toggle { display: grid; place-items: center; }
 
+#player[data-state="waiting"] .play-toggle,
+#player[data-state="frame"] .play-toggle { display: none; }
+
 .play-toggle svg {
   width: 34px;
   height: 34px;
@@ -379,7 +478,11 @@ body {
   height: 8px;
   background: #6e6e6e;
   z-index: 5;
+  transition: opacity 400ms ease;
 }
+
+#player[data-state="waiting"] .progress,
+#player[data-state="frame"] .progress { opacity: 0; }
 
 .progress-fill {
   height: 100%;
@@ -409,6 +512,13 @@ body {
 }
 
 .panel h2 { margin: 0 0 12px; font-size: 15px; }
+
+.panel-note {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
 
 .panel h3 {
   margin: 18px 0 8px;
